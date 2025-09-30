@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# build / cache
+.cache/
+tmp/
+*.tmp
+
+# editors
+.idea/
+.vscode/

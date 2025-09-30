@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve lib dir relative to this file
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${MACPAK_LIBDIR:-"$SCRIPT_DIR/../lib"}"
+
+# Source modules
+. "$LIB_DIR/core.sh"
+. "$LIB_DIR/cmd_doctor.sh"
+. "$LIB_DIR/ui.sh"
+. "$LIB_DIR/catalog.sh"
+. "$LIB_DIR/leftovers_lists.sh"
+. "$LIB_DIR/leftovers_delete.sh"
+. "$LIB_DIR/brewfile.sh"
+. "$LIB_DIR/scan.sh"
+. "$LIB_DIR/cmd_search.sh"
+. "$LIB_DIR/cmd_list.sh"
+. "$LIB_DIR/cmd_zap.sh"
+. "$LIB_DIR/cmd_cache_refresh.sh"
+
+# Dispatcher
+case "${1:-}" in
+-h | --help | '')
+	usage
+	exit 0
+	;;
+-v | --version | version)
+	print_version
+	exit 0
+	;;
+doctor)
+	shift
+	cmd_doctor
+	;;
+search)
+	shift
+	cmd_search "$@"
+	;;
+list)
+	shift
+	cmd_list "$@"
+	;;
+zap)
+	shift
+	cmd_zap "$@"
+	;;
+cache)
+	shift
+	case "${1:-}" in
+	refresh)
+		shift
+		cmd_cache_refresh "$@"
+		;;
+	*)
+		echo "$APP_NAME: unknown 'cache' subcommand" >&2
+		echo "try: $APP_NAME cache refresh" >&2
+		exit 1
+		;;
+	esac
+	;;
+*)
+	echo "$APP_NAME: unknown command '$1'" >&2
+	echo "Run '$APP_NAME --help' for usage." >&2
+	exit 1
+	;;
+esac

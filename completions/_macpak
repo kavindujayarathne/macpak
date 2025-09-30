@@ -1,0 +1,67 @@
+#compdef macpak
+
+_macpak() {
+  local -a flags
+  flags=(
+    '--help:Show help information'
+    '-h:Show help information'
+    '--version:Show version information'
+    '-v:Show version information'
+  )
+
+  local -a subcommands
+  subcommands=(
+    'search:Search available Homebrew formulae and casks'
+    'list:List installed Homebrew formulae and casks'
+    'zap:Completely remove a formula or cask and its leftovers'
+    'cache:Manage macpak cache (e.g. refresh)'
+    'doctor:Check required/optional tools and config'
+  )
+
+  # 1st word after macpak -> subcommand
+  # 2nd word -> that subcommand's argument
+  # 3rd word -> stop (don’t offer flags again)
+  _arguments -C \
+    '1:subcommand:->subcmd' \
+    '2:argument:->arg' \
+    '3:: :->stop' && return 0
+
+  case $state in
+    subcmd)
+      _describe -t macpak_choices 'Subcommands' subcommands
+      _describe -t macpak_choices 'Flags'       flags
+      return 0
+      ;;
+
+    arg)
+      local subcmd=$words[2]
+
+      case $subcmd in
+        cache)
+          _values 'cache action' refresh
+          ;;
+
+        list)
+          if (( $+commands[brew] )); then
+            local -a names
+            names=(${(f)"$(brew list 2>/dev/null)"})
+            _values 'installed package' $names
+          fi
+          ;;
+
+        search|zap|doctor)
+          ;;
+
+        *)
+          ;;
+      esac
+      return 0
+      ;;
+
+    stop)
+      return 0
+      ;;
+  esac
+}
+
+# compdef _macpak macpak

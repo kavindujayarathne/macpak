@@ -1,0 +1,45 @@
+# shellcheck shell=bash
+
+_macpak_completion() {
+  local cur
+  cur="${COMP_WORDS[COMP_CWORD]:-}"
+
+  local flags="-h --help -v --version"
+  local subcmds="search list zap cache doctor"
+
+  if (( COMP_CWORD == 1 )); then
+    # shellcheck disable=SC2207
+    COMPREPLY=( $(compgen -W "$flags $subcmds" -- "$cur") )
+    return 0
+  fi
+
+  case "${COMP_WORDS[1]}" in
+    cache)
+      if (( COMP_CWORD == 2 )); then
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "refresh" -- "$cur") )
+      else
+        COMPREPLY=()
+      fi
+      ;;
+    list)
+      if (( COMP_CWORD == 2 )) && command -v brew >/dev/null 2>&1; then
+        local names
+        names="$(brew list 2>/dev/null)"
+        # shellcheck disable=SC2207
+        COMPREPLY=( $(compgen -W "$names" -- "$cur") )
+      else
+        COMPREPLY=()
+      fi
+      ;;
+    search|zap|doctor)
+      COMPREPLY=()
+      ;;
+    *)
+      COMPREPLY=()
+      ;;
+  esac
+}
+
+# Register the function for macpak
+complete -F _macpak_completion macpak
