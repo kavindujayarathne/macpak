@@ -61,11 +61,11 @@ cmd_list() {
 			continue
 		fi
 
-		# if [[ "$kind" == "cask" ]]; then
-		# 	if brew uninstall --cask "$name"; then uninstalled_any=1; fi
-		# else
-		# 	if brew uninstall --formula "$name"; then uninstalled_any=1; fi
-		# fi
+		if [[ "$kind" == "cask" ]]; then
+			if brew uninstall --cask "$name"; then uninstalled_any=1; fi
+		else
+			if brew uninstall --formula "$name"; then uninstalled_any=1; fi
+		fi
 
 		if ((AUTO_SCAN_AFTER_UNINSTALL)); then
 			echo

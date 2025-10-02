@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 (2025-09-24)
+
+This is just testing
+
 ## 1.0.0 (2025-09-23)
 
 ### Features
