@@ -1,6 +1,6 @@
 # macpak
 
-![macpak-image](./media/demo-image.png)
+![macpak-image](./media/demo-image1.png)
 
 **macpak** — Interactive wrapper that makes Homebrew much easier to use + zapper for non-brew apps (fzf-powered).  
 It provides a fast, streamlined way to browse, install, and uninstall packages with additional cleanup helpers for non-brew software.  
@@ -22,6 +22,11 @@ For full guidance and configuration details, please check the [documentation](ht
 - 🧹 Zapper for non-brew apps (app + leftovers)  
 - ⚡ Cached index for speed  
 - 🛠 Doctor command for sanity checks  
+
+## Requirements
+
+- [Homebrew](https://brew.sh/) (must be installed on the system)
+- [fzf](https://github.com/junegunn/fzf) (installed automatically if missing)
 
 ## Installation
 
