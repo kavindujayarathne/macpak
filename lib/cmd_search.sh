@@ -16,7 +16,7 @@ cmd_search() {
 		if [[ -n "$query" ]]; then
 			list="$(grep -i -- "$query" "$idx" || true)"
 			[[ -n "$list" ]] || {
-				echo "No matches for: $query" >&2
+				echo "$APP_NAME: no matches for: $query" >&2
 				return 0
 			}
 		else
@@ -33,14 +33,14 @@ cmd_search() {
 		list="$(<"$tmp")"
 		rm -f "$tmp"
 		[[ -n "$list" ]] || {
-			echo "No matches for: $query" >&2
+			echo "$APP_NAME: no matches for: $query" >&2
 			return 0
 		}
 	fi
 
 	local selections
 	selections="$(
-		echo "$list" |
+		printf '%s\n' "$list" |
 			fzf --ansi --multi \
 				--delimiter=$'\t' --with-nth=1 \
 				--header='Enter=install • tab=multi • Ctrl-P=pager' \
@@ -48,7 +48,7 @@ cmd_search() {
 				--preview-window=right,wrap,65% \
 				--bind "tab:toggle-down,ctrl-p:execute($PAGER_SNIPPET)"
 	)" || {
-		echo "$APP_NAME: Exiting" >&2
+		echo "$APP_NAME: exiting" >&2
 		return 0
 	}
 	[[ -z "$selections" ]] && return 0
@@ -70,7 +70,7 @@ cmd_search() {
 		echo
 
 		if ! ask_yes_no "Proceed to install '$name'? [y/N] "; then
-			echo "Installation Canceled for: $name"
+			echo "$APP_NAME: installation canceled for: $name"
 			continue
 		fi
 
@@ -86,7 +86,7 @@ cmd_search() {
 	if ((AUTO_BREWFILE && installed_any)); then
 		brewfile_dump || {
 			echo "$APP_NAME: failed to update Brewfile" >&2
-			# return 1
+			return 1
 		}
 	fi
 }

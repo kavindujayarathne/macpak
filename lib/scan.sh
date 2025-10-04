@@ -1,9 +1,5 @@
 # shellcheck shell=bash
 
-# Smart filesystem scan (find-only):
-# - Prunes exact absolute EXCLUDES (and everything under them)
-# - Case-insensitive search
-# - Keeps only "whole-token" matches (token = surrounded by non-alnum or path edges)
 scan_fs() {
 	local name="$1"
 	[[ -z "$name" ]] && return 0

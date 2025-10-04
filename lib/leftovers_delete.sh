@@ -96,5 +96,5 @@ delete_paths() {
 		fi
 	fi
 
-	echo "Leftovers removed."
+	echo "$APP_NAME: leftovers removed."
 }

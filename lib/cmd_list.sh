@@ -10,15 +10,15 @@ cmd_list() {
 	list="$(printf "%s\n%s\n" "$list_c" "$list_f" | sed '/^[[:space:]]*$/d' | sort -f)"
 
 	[[ -n "$list" ]] || {
-		echo "Nothing installed"
+		echo "$APP_NAME: nothing installed"
 		return 1
 	}
 
 	# Optional prefilter
 	if [[ -n "$query" ]]; then
-		list="$(echo "$list" | grep -i -- "$query" || true)"
+		list="$(printf '%s\n' "$list" | grep -i -- "$query" || true)"
 		[[ -n "$list" ]] || {
-			echo "no installed items matching: $query"
+			echo "$APP_NAME: no installed items matching: $query"
 			return 0
 		}
 	fi
@@ -26,7 +26,7 @@ cmd_list() {
 	# Choose one or more to uninstall
 	local selections
 	selections="$(
-		echo "$list" |
+		printf '%s\n' "$list" |
 			fzf --ansi --multi \
 				--delimiter=$'\t' --with-nth=1 \
 				--header='Enter=uninstall • tab=multi • Ctrl-P=pager' \
@@ -34,7 +34,7 @@ cmd_list() {
 				--preview-window=right,wrap,65% \
 				--bind "tab:toggle-down,ctrl-p:execute($PAGER_SNIPPET)"
 	)" || {
-		echo "$APP_NAME: Exiting" >&2
+		echo "$APP_NAME: exiting" >&2
 		return 0
 	}
 	[[ -z "$selections" ]] && return 0
@@ -57,7 +57,7 @@ cmd_list() {
 		echo
 
 		if ! ask_yes_no "Proceed to uninstall '$name'? [y/N] "; then
-			echo "Uninstallation Canceled for: $name"
+			echo "$APP_NAME: uninstallation canceled for: $name"
 			continue
 		fi
 
@@ -72,7 +72,7 @@ cmd_list() {
 			local raw_hits
 			raw_hits="$(spinner "Scanning leftovers for: ${name:-}…" scan_fs "$name")" || raw_hits=""
 			[[ -z "$raw_hits" ]] && {
-				echo "No leftovers found for: $name"
+				echo "$APP_NAME: no leftovers found for: $name"
 				continue
 			}
 
@@ -85,7 +85,7 @@ cmd_list() {
 			local leftovers_paths
 			leftovers_paths="$(pick_leftovers "leftovers for: $name" "$lists_dir")" || leftovers_paths=""
 			[[ -z "$leftovers_paths" ]] && {
-				echo "No leftovers selected."
+				echo "$APP_NAME: no leftovers selected."
 				continue
 			}
 
@@ -94,10 +94,12 @@ cmd_list() {
 			if ask_yes_no "Proceed? [y/N] "; then
 				delete_paths
 			else
-				echo "Skipped leftovers for: $name"
+				echo "$APP_NAME: skipped leftovers for: $name"
 			fi
 		fi
 	done <<<"$selections"
+
+	echo
 
 	if ((AUTO_BREWFILE && uninstalled_any)); then
 		brewfile_dump || {

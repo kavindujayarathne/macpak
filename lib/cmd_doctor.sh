@@ -26,12 +26,6 @@ cmd_doctor() {
 
 	echo
 
-	# if have git; then
-	# 	echo " ✓ git          — found (prettier version strings)"
-	# else
-	# 	echo " ◦ git          — optional → brew install git"
-	# fi
-
 	if [[ "${USE_TRASH:-1}" == "1" ]]; then
 		if [[ -x /usr/bin/trash ]]; then
 			echo " ✓ trash        — system /usr/bin/trash available (safe deletes)"
@@ -90,7 +84,7 @@ cmd_doctor() {
 		fi
 	}
 
-	# If you don’t want to add DEF_* vars, pass the literal default here matching your code defaults.
+	# Passing env variables with defualt values inside show_cfg()
 	show_cfg USE_TRASH 1
 	show_cfg AUTO_BREWFILE 1
 	show_cfg BREWFILE_PATH "$HOME/.config/brewfile/Brewfile"

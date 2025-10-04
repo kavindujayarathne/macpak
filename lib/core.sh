@@ -8,7 +8,7 @@ have() { command -v "$1" >/dev/null 2>&1; }
 
 need() {
 	have "$1" || {
-		echo "missing: $1" >&2
+		echo "$APP_NAME: missing: $1" >&2
 		exit 1
 	}
 }
@@ -68,39 +68,32 @@ USE_CACHE_FOR_QUERY=${USE_CACHE_FOR_QUERY:-1}
 AUTO_SCAN_AFTER_UNINSTALL=${AUTO_SCAN_AFTER_UNINSTALL:-1}
 
 # --- usage ---
-#TODO: we have to add version help sort of things under usage
-#FIX: for macpak --help this message shows differently.. how the fuck it can be happened
 usage() {
 	cat <<EOF
 $APP_NAME — Interactive wrapper that makes Homebrew much easier to use + zapper for non-brew apps (fzf-powered)
 Version: $VERSION
 
 Usage:
-  $APP_NAME search [query]         # browse Homebrew catalog with preview; Enter to install
-  $APP_NAME list [query]           # browse installed packages; Enter to uninstall
-  $APP_NAME zap <keyword>          # sweep and remove non-brew apps with leftovers
-  $APP_NAME cache refresh          # rebuild the cached Homebrew index
-  $APP_NAME doctor                 # check required/optional tools and config
+  $APP_NAME [-h | --help] [-v | --version | version] <subcommand> [args]
+
+Subcommands:
+  search [query]                  Browse Homebrew catalog with preview; Enter to install
+  list [query]                    Browse installed packages; Enter to uninstall
+  zap <keyword>                   Sweep and remove non-brew apps with leftovers
+  cache refresh                   Rebuild the cached Homebrew index
+  doctor                          Check required/optional tools and config
 
 Env/config (optional; ~/.config/$APP_NAME/config.sh can override):
+  USE_CACHE_FOR_QUERY             Use cached Homebrew index for searches; set 0 to query live.
+  INDEX_PATH                      Path to the cached index TSV used for fast searches.
+  INDEX_TTL_SECS                  Cache freshness window in seconds.
+  AUTO_SCAN_AFTER_UNINSTALL       After uninstall, prompt to scan for leftover files.
+  USE_TRASH                       Prefer safe deletes via Trash; set 0 for permanent deletion.
+  EXCLUDES                        Paths/globs to exclude from zap/uninstall sweeps.
+  ROOTS                           Directories to scan when sweeping for leftovers.
+  AUTO_BREWFILE                   Auto-update Brewfile after installs/uninstalls.
+  BREWFILE_PATH                   Location of the Brewfile to update.
 
-  # scanning behaviour
-  USE_CACHE_FOR_QUERY=0            # default: enabled; set to 0 to disable cache use and always hit brew
-
-  # caching
-  INDEX_PATH=""                    # index file path (default: \$XDG_CACHE_HOME/$APP_NAME/index.tsv, else ~/.cache/$APP_NAME/index.tsv)
-  INDEX_TTL_SECS=                  # seconds before cached index expires (default: 86400 / 24h)
-
-  # leftovers
-  AUTO_SCAN_AFTER_UNINSTALL=0      # default: enabled; set to 0 to disable auto-scan after uninstall
-
-  # deletion behaviour
-  USE_TRASH=0                      # default: enabled; set to 0 to force permanent deletion
-  EXCLUDES=("")                    # patterns/paths to exclude from zap/uninstall sweeps
-  ROOTS=("")                       # search roots for sweeping (default includes /Applications, /Library, etc.)
-
-  # Brewfile integration
-  AUTO_BREWFILE=0                  # default: enabled; set to 0 to disable Brewfile auto dump
-  BREWFILE_PATH=""                 # Brewfile location (default: ~/.config/brewfile/Brewfile)
+Tip: run '$APP_NAME doctor' to see current values and which ones are overridden (*).
 EOF
 }

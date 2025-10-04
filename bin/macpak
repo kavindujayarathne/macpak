@@ -54,7 +54,7 @@ cache)
 		;;
 	*)
 		echo "$APP_NAME: unknown 'cache' subcommand" >&2
-		echo "try: $APP_NAME cache refresh" >&2
+		echo "Try: $APP_NAME cache refresh" >&2
 		exit 1
 		;;
 	esac
