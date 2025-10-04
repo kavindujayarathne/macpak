@@ -15,9 +15,7 @@ And for apps installed outside of Homebrew, dragging them to the Trash doesn’t
 
 For full guidance and configuration details, please check the [documentation](https://kavindujayarathne.com/blogs/macpak-documentation).
 
----
-
-### Features
+## Features
 
 - 🔍 Fuzzy search Homebrew formulas & casks  
 - 📦 Interactive install/uninstall flow  
@@ -25,9 +23,7 @@ For full guidance and configuration details, please check the [documentation](ht
 - ⚡ Cached index for speed  
 - 🛠 Doctor command for sanity checks  
 
----
-
-### Installation
+## Installation
 
 Install directly from the tap:
 
@@ -36,9 +32,7 @@ brew tap kavindujayarathne/macpak
 brew install --formula macpak
 ```
 
----
-
-### Usage
+## Usage
 
 ```bash
 macpak search [query]       # browse Homebrew catalog with preview; Enter to install
@@ -52,16 +46,11 @@ macpak doctor               # check required/optional tools and config
 > For environment variables and advanced configuration via `~/.config/macpak/config.sh`,  
 > see the [documentation](https://kavindujayarathne.com/blogs/macpak-documentation).
 
-
----
-
-### License
+## License
 
 This project is licensed under the [MIT License](LICENSE).
 
----
-
-### Contributing
+## Contributing
 
 Contributions, issues, and feature requests are welcome!  
 Please also feel free to open an issue if you run into bugs or have feature suggestions.
