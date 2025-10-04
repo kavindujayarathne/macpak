@@ -25,8 +25,8 @@ For full guidance and configuration details, please check the [documentation](ht
 
 ## Requirements
 
-- [Homebrew](https://brew.sh/) (must be installed on the system)
-- [fzf](https://github.com/junegunn/fzf) (installed automatically if missing)
+- 🍺 [Homebrew](https://brew.sh/) (must be installed on the system)
+- 🔍 [fzf](https://github.com/junegunn/fzf) (installed automatically if missing)
 
 ## Installation
 
