@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install tooling
+        run: |
+          brew update
+          brew install fzf shellcheck bats-core
+
+      - id: lint
+        name: Lint
+        run: |
+          shellcheck -x bin/macpak completions/macpak
+          if find lib -type f -name '*.sh' -print -quit | grep -q .; then
+            find lib -type f -name '*.sh' -print0 | xargs -0 shellcheck -x
+          fi
+          zsh -n completions/_macpak
+
+      - id: bats
+        name: Unit tests (bats)
+        run: |
+          bats --print-output-on-failure test/
+
+      - id: build
+        name: Build tarball
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist
+          tar -czf "dist/macpak-${VERSION}.tar.gz" \
+            bin lib completions LICENSE README.md CHANGELOG.md
+          shasum -a 256 "dist/macpak-${VERSION}.tar.gz" > "dist/SHA256.txt"
+          cat dist/SHA256.txt
+
+      - id: notes
+        name: Extract release notes from CHANGELOG
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          VER="${VERSION#v}"
+          awk -v ver="## ${VER} " '
+            BEGIN { p=0 }
+            index($0, ver)==1 { p=1; next }
+            p && /^## / { exit }
+            p { print }
+          ' CHANGELOG.md > dist/RELEASE_NOTES.md || true
+          if [ ! -s dist/RELEASE_NOTES.md ]; then
+            echo "::error::No changelog section for ${VER}. Update CHANGELOG.md before tagging (expected heading: '## ${VER} (… )')."
+            exit 1
+          fi
+          cat dist/RELEASE_NOTES.md
+
+      - id: gh_release
+        name: Create GitHub Release & upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          body_path: dist/RELEASE_NOTES.md
+          files: |
+            dist/macpak-${{ github.ref_name }}.tar.gz
+            dist/SHA256.txt
+
+      - id: tap_bump
+        name: Auto-bump Homebrew tap formula
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+        if: ${{ env.COMMITTER_TOKEN != '' }}
+        uses: mislav/bump-homebrew-formula-action@v2
+        with:
+          formula-name: macpak
+          homebrew-tap: ${{ vars.TAP_REPO }}
+          download-url: https://github.com/${{ github.repository }}/archive/refs/tags/${{ github.ref_name }}.tar.gz
+          tag-name: ${{ github.ref_name }}
+          commit-message: |
+            macpak ${{ github.ref_name }}: bump formula to ${{ github.ref_name }}
+
+      - name: Release summary
+        if: always()
+        run: |
+          {
+            echo "## macpak Release summary"
+            echo ""
+            echo "| Step        | Result |"
+            echo "|-------------|--------|"
+            echo "| Lint        | ${{ steps.lint.outcome }} |"
+            echo "| Tests       | ${{ steps.bats.outcome }} |"
+            echo "| Build       | ${{ steps.build.outcome }} |"
+            echo "| Notes       | ${{ steps.notes.outcome }} |"
+            echo "| GH Release  | ${{ steps.gh_release.outcome }} |"
+            echo "| Tap Bump    | ${{ steps.tap_bump.outcome || 'skipped' }} |"
+            echo ""
+            echo "> Overall job status: **${{ job.status }}**"
+          } >> "$GITHUB_STEP_SUMMARY"

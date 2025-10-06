@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install tooling
+        run: |
+          brew update
+          brew install fzf shellcheck bats-core
+
+      - id: lint
+        name: Lint
+        run: |
+          shellcheck -x bin/macpak completions/macpak
+          if find lib -type f -name '*.sh' -print -quit | grep -q .; then
+            find lib -type f -name '*.sh' -print0 | xargs -0 shellcheck -x
+          fi
+          zsh -n completions/_macpak
+
+      - id: bats
+        name: Unit tests (bats)
+        run: |
+          bats --print-output-on-failure test/
+
+      - id: smoke
+        name: Smoke run
+        env:
+          MACPAK_VERSION: 0.0.0
+        run: |
+          ./bin/macpak -v
+          ./bin/macpak --help
+          ./bin/macpak doctor || true
+
+      - name: CI summary
+        if: always()
+        run: |
+          {
+            echo "## macpak CI summary"
+            echo ""
+            echo "| Step   | Result |"
+            echo "|--------|--------|"
+            echo "| Lint   | ${{ steps.lint.outcome }} |"
+            echo "| Tests  | ${{ steps.bats.outcome }} |"
+            echo "| Smoke  | ${{ steps.smoke.outcome }} |"
+            echo ""
+            echo "> Overall job status: **${{ job.status }}**"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Resolve lib dir relative to this file
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="${MACPAK_LIBDIR:-"$SCRIPT_DIR/../lib"}"
+
+# Source Always needed modules
+. "$LIB_DIR/core.sh"
+
+# Dispatcher
+case "${1:-}" in
+-h | --help | '')
+	usage
+	exit 0
+	;;
+-v | --version | version)
+	print_version
+	exit 0
+	;;
+doctor)
+	. "$LIB_DIR/cmd_doctor.sh"
+	cmd_doctor
+	;;
+search)
+	shift
+	. "$LIB_DIR/ui.sh"
+	. "$LIB_DIR/catalog.sh"
+	. "$LIB_DIR/brewfile.sh"
+	. "$LIB_DIR/cmd_search.sh"
+	cmd_search "$@"
+	;;
+list)
+	shift
+	. "$LIB_DIR/ui.sh"
+	. "$LIB_DIR/scan.sh"
+	. "$LIB_DIR/leftovers_lists.sh"
+	. "$LIB_DIR/leftovers_delete.sh"
+	. "$LIB_DIR/brewfile.sh"
+	. "$LIB_DIR/cmd_list.sh"
+	cmd_list "$@"
+	;;
+zap)
+	shift
+	. "$LIB_DIR/ui.sh"
+	. "$LIB_DIR/scan.sh"
+	. "$LIB_DIR/leftovers_lists.sh"
+	. "$LIB_DIR/leftovers_delete.sh"
+	. "$LIB_DIR/cmd_zap.sh"
+	cmd_zap "$@"
+	;;
+cache-refresh)
+	. "$LIB_DIR/ui.sh"
+	. "$LIB_DIR/catalog.sh"
+	. "$LIB_DIR/cmd_cache_refresh.sh"
+	cmd_cache_refresh
+	;;
+*)
+	echo "$APP_NAME: unknown command '$1'" >&2
+	echo "Run '$APP_NAME --help' for usage." >&2
+	exit 1
+	;;
+esac

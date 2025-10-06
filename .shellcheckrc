@@ -1,0 +1,5 @@
+# Resolve sources relative to the script file, not the CWD
+source-path=SCRIPTDIR/../lib
+
+# Optional: follow sources not explicitly passed on the command line
+external-sources=true
