@@ -15,6 +15,11 @@ And for apps installed outside of Homebrew, dragging them to the Trash doesn’t
 
 For full guidance and configuration details, please check the [documentation](https://kavindujayarathne.com/blogs/macpak-documentation).
 
+## Demo
+
+<!-- Demo source: https://github.com/kavindujayarathne/macpak/tree/main/media/demo-video.mp4 -->
+https://github.com/user-attachments/assets/c8d93549-d97b-4853-b969-ad998ffaa93e
+
 ## Features
 
 - 🔍 Fuzzy search Homebrew formulas & casks  
