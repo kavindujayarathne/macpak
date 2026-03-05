@@ -80,7 +80,7 @@ cmd_doctor() {
 		fi
 	}
 
-	# Passing env variables with defualt values inside show_cfg()
+	# Passing env variables with default values inside show_cfg()
 	show_cfg USE_TRASH 1
 	show_cfg AUTO_BREWFILE 1
 	show_cfg BREWFILE_PATH "$HOME/.config/brewfile/Brewfile"
@@ -90,9 +90,9 @@ cmd_doctor() {
 	show_cfg AUTO_SCAN_AFTER_UNINSTALL 1
 
 	show_cfg ROOTS "$(printf '%s\n' \
-		"/Applications" "/Library" "/private/var/folders" "/private/var/root/Library" \
-		"/private/var/log" "/private/var/tmp" "/private/var/db/receipts" \
-		"/opt/homebrew" "/usr/local" "$HOME")"
+		"/Applications" "/Library" "/private/etc" \
+		"/private/var/db/receipts" "/private/var/root/Library" "/private/var/log" \
+		"/opt/homebrew" "/usr/local" "/Users/Shared" "$HOME")"
 
 	show_cfg EXCLUDES ""
 

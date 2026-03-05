@@ -34,20 +34,26 @@ print_version() { printf '%s %s\n' "$APP_NAME" "$VERSION"; }
 
 # --- config (edit to taste or source ~/.config/macpak/config.sh) ---
 # shellcheck disable=SC2034
+
 ROOTS=(
 	"/Applications"
 	"/Library"
-	"/private/var/folders"
+	"/private/etc"
+	"/private/var/db/receipts"
 	"/private/var/root/Library"
 	"/private/var/log"
-	"/private/var/tmp"
-	"/private/var/db/receipts"
 	"/opt/homebrew"
 	"/usr/local"
+	"/Users/Shared"
 	"$HOME"
 )
 
-# use config.sh to add paths here, e.g. EXCLUDES=("$HOME/Developer" "$HOME/dotfiles")
+# use config.sh to add paths here,
+# e.g. EXCLUDES=(
+#        "$HOME/Developer"
+#        "$HOME/dotfiles
+#      )
+
 # shellcheck disable=SC2034
 EXCLUDES=()
 

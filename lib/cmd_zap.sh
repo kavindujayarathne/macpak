@@ -27,10 +27,15 @@ cmd_zap() {
 		return 0
 	}
 
+	# Grouped preview + delete flow
 	group_leftovers "$leftovers_paths"
-	if ask_yes_no "Proceed? [y/N] "; then
-		delete_paths
+	if ((${#GROUP_USER_WRITABLE[@]} + ${#GROUP_PRIVILEGED[@]})); then
+		if ask_yes_no "Proceed? [y/N] "; then
+			delete_paths
+		else
+			echo "$APP_NAME: skipped the selected path(s) for: $pattern"
+		fi
 	else
-		echo "$APP_NAME: skipped the selected path(s) for: $pattern"
+		delete_paths
 	fi
 }

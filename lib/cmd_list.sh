@@ -6,7 +6,10 @@ cmd_list() {
 	# Build installed list (label + hidden raw name)
 	local list_c list_f list
 	list_c="$(brew list --cask | awk -v OFS='\t' -v label='[cask] ' '{print label $0, $0}')" || list_c=""
-	list_f="$(brew list --formula | awk -v OFS='\t' -v label='[formula] ' '{print label $0, $0}')" || list_f=""
+
+	# Next version could include improvements based on this logic
+	list_f="$(brew list --formula --installed-on-request | awk -v OFS='\t' -v label='[formula] ' '{print label $0, $0}')" || list_f=""
+
 	list="$(printf "%s\n%s\n" "$list_c" "$list_f" | sed '/^[[:space:]]*$/d' | sort -f)"
 
 	[[ -n "$list" ]] || {
@@ -91,10 +94,14 @@ cmd_list() {
 
 			# Grouped preview + delete flow
 			group_leftovers "$leftovers_paths"
-			if ask_yes_no "Proceed? [y/N] "; then
-				delete_paths
+			if ((${#GROUP_USER_WRITABLE[@]} + ${#GROUP_PRIVILEGED[@]})); then
+				if ask_yes_no "Proceed? [y/N] "; then
+					delete_paths
+				else
+					echo "$APP_NAME: skipped leftovers for: $name"
+				fi
 			else
-				echo "$APP_NAME: skipped leftovers for: $name"
+				delete_paths
 			fi
 		fi
 	done <<<"$selections"

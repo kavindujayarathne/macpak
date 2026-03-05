@@ -57,14 +57,14 @@ jobs:
           set -euo pipefail
           mkdir -p dist
           VER="${VERSION#v}"
-          awk -v ver="## ${VER} " '
+          awk -v ver="## [${VER}]" '
             BEGIN { p=0 }
             index($0, ver)==1 { p=1; next }
             p && /^## / { exit }
             p { print }
           ' CHANGELOG.md > dist/RELEASE_NOTES.md || true
           if [ ! -s dist/RELEASE_NOTES.md ]; then
-            echo "::error::No changelog section for ${VER}. Update CHANGELOG.md before tagging (expected heading: '## ${VER} (… )')."
+            echo "::error::No changelog section for ${VER}. Update CHANGELOG.md before tagging (expected heading: '## [${VER}] - YYYY-MM-DD')."
             exit 1
           fi
           cat dist/RELEASE_NOTES.md

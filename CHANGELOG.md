@@ -5,7 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.0.0 (2025-10-5)
+## [1.1.0] - 2026-02-26
+
+### Added
+
+- **Shared path detection in leftover cleanup**
+  - Paths inside shared (world-writable) directories like `/Users/Shared` are now detected and
+    grouped separately during leftover cleanup
+  - Users are prompted to remove them with elevated privileges or skip for manual removal
+  - When only shared paths are found, the initial confirmation prompt is skipped and macpak proceeds
+    directly to handle them
+
+### Changed
+
+- **`macpak list` now shows only explicitly installed formulas**
+  - Uses `--installed-on-request` flag so auto-installed dependencies are excluded from the list
+
+- **Improved leftover deletion flow**
+  - Trash failures are now reported in batch with a confirmation prompt before falling back to
+    permanent removal (rm -rf)
+  - Failed removals are collected and reported with clear error messages instead of being silently
+    ignored
+
+- **Updated default scan paths (ROOTS)**
+  - Removed `/private/var/folders` and `/private/var/tmp` (self-cleaning directories)
+  - Added `/private/etc` and `/Users/Shared`
+
+### Fixed
+
+- **Permission check in `can_unlink_as_user()`**
+  - Previously only checked parent directory permissions. Now also verifies that target directories
+    themselves are writable, since a non-empty directory without write permission cannot be removed
+    without elevation
+
+- **Privileged removal error handling**
+  - Failed `sudo rm -rf` removals are now detected and reported instead of being silently ignored
+
+## [1.0.0] - 2025-10-05
 
 ### Added
 
