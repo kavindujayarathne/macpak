@@ -10,7 +10,7 @@ completely remove applications installed outside of Homebrew, along with their l
 Read more:
 
 - [Documentation](https://kavindujayarathne.com/blogs/macpak-documentation)
-- [Story behind macpak](https://kavindujayarathne.com/blogs/journey-of-my-first-cli-tool)
+- [Story behind macpak](https://kavindujayarathne.com/blogs/journey-of-macpak)
 
 ## Demo
 
