@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -71,7 +71,7 @@ jobs:
 
       - id: gh_release
         name: Create GitHub Release & upload assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v2.5.0
         with:
           tag_name: ${{ github.ref_name }}
           draft: false
@@ -86,7 +86,7 @@ jobs:
         env:
           COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
         if: ${{ env.COMMITTER_TOKEN != '' }}
-        uses: mislav/bump-homebrew-formula-action@v2
+        uses: mislav/bump-homebrew-formula-action@v3.6
         with:
           formula-name: macpak
           homebrew-tap: ${{ vars.TAP_REPO }}
