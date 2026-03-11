@@ -109,9 +109,11 @@ cmd_list() {
 	echo
 
 	if ((AUTO_BREWFILE && uninstalled_any)); then
-		brewfile_dump || {
+		if spinner "Updating Brewfile…" brewfile_dump; then
+			echo "$APP_NAME: Brewfile updated"
+		else
 			echo "$APP_NAME: failed to update Brewfile" >&2
 			return 1
-		}
+		fi
 	fi
 }

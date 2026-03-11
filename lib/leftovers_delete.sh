@@ -42,7 +42,7 @@ group_leftovers() {
 	done <<<"$paths"
 
 	echo
-	echo "Selected paths :"
+	echo "Selected paths:"
 	if ((${#GROUP_USER_WRITABLE[@]})); then
 		echo "  User-writable:"
 		nl -ba <<<"$(printf '%s\n' "${GROUP_USER_WRITABLE[@]}")"

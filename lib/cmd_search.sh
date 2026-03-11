@@ -58,6 +58,11 @@ cmd_search() {
 		local kind
 		if [[ "$label" =~ ^\[cask\] ]]; then kind="cask"; else kind="formula"; fi
 
+		if brew list --"$kind" "$name" &>/dev/null 2>&1; then
+			echo "$APP_NAME: $name is already installed, skipping"
+			continue
+		fi
+
 		echo
 		echo "────────────────────────────────────────────────────────"
 		echo "Target: $name [$kind]"
@@ -81,12 +86,13 @@ cmd_search() {
 		fi
 	done <<<"$selections"
 
-	echo
-
 	if ((AUTO_BREWFILE && installed_any)); then
-		brewfile_dump || {
+		echo
+		if spinner "Updating Brewfile…" brewfile_dump; then
+			echo "$APP_NAME: Brewfile updated"
+		else
 			echo "$APP_NAME: failed to update Brewfile" >&2
 			return 1
-		}
+		fi
 	fi
 }

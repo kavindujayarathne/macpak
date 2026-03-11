@@ -29,7 +29,7 @@ TRASH_OK=1
 command -v trash >/dev/null || TRASH_OK=0
 
 # --- version ---
-VERSION="${MACPAK_VERSION:-1.0.0}"
+VERSION="${MACPAK_VERSION:-1.1.1}"
 print_version() { printf '%s %s\n' "$APP_NAME" "$VERSION"; }
 
 # --- config (edit to taste or source ~/.config/macpak/config.sh) ---

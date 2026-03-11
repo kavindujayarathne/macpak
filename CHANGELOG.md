@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-12
+
+### Changed
+
+- **Spinner shown while Brewfile is updating**
+  - `macpak search` and `macpak list` now display a spinner with "Updating Brewfile…" instead of
+    silently pausing while `brew bundle dump` runs
+  - A confirmation message is printed once the update completes, or an error is reported on failure
+
+### Fixed
+
+- **Skip install for already-installed packages in `macpak search`**
+  - Selecting a package that is already installed no longer attempts a brew install, preventing
+    an unnecessary Brewfile update from being triggered when nothing was actually installed
+
 ## [1.1.0] - 2026-02-26
 
 ### Added
