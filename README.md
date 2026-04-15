@@ -14,8 +14,7 @@ Read more:
 
 ## Demo
 
-<!-- Demo source: https://github.com/kavindujayarathne/macpak/tree/main/media/demo-video.mp4 -->
-https://github.com/user-attachments/assets/c8d93549-d97b-4853-b969-ad998ffaa93e
+https://github.com/user-attachments/assets/e48d35ab-a2e6-4638-93f8-44e948f35722
 
 ## Features
 
