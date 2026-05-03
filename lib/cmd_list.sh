@@ -42,10 +42,18 @@ cmd_list() {
 	}
 	[[ -z "$selections" ]] && return 0
 
-	local uninstalled_any=0
+	# fix: iterate selections from an in-memory array so brew uninstall cannot consume the loop's stdin
+	local -a selection_lines=()
+	local line
+	while IFS= read -r line; do
+		[[ -n "$line" ]] && selection_lines+=("$line")
+	done <<<"$selections"
 
-	while IFS=$'\t' read -r label name; do
-		local kind
+	local uninstalled_any=0
+	local label name kind
+
+	for line in "${selection_lines[@]}"; do
+		IFS=$'\t' read -r label name <<<"$line"
 		if [[ "$label" =~ ^\[cask\] ]]; then kind="cask"; else kind="formula"; fi
 
 		echo
@@ -104,7 +112,7 @@ cmd_list() {
 				delete_paths
 			fi
 		fi
-	done <<<"$selections"
+	done
 
 	echo
 

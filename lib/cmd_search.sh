@@ -53,9 +53,17 @@ cmd_search() {
 	}
 	[[ -z "$selections" ]] && return 0
 
+	# fix: iterate selections from an in-memory array so brew install cannot consume the loop's stdin
+	local -a selection_lines=()
+	local line
+	while IFS= read -r line; do
+		[[ -n "$line" ]] && selection_lines+=("$line")
+	done <<<"$selections"
+
 	local installed_any=0
-	while IFS=$'\t' read -r label name; do
-		local kind
+	local label name kind
+	for line in "${selection_lines[@]}"; do
+		IFS=$'\t' read -r label name <<<"$line"
 		if [[ "$label" =~ ^\[cask\] ]]; then kind="cask"; else kind="formula"; fi
 
 		if brew list --"$kind" "$name" &>/dev/null 2>&1; then
@@ -84,7 +92,7 @@ cmd_search() {
 		else
 			brew install --formula "$name" && installed_any=1 || true
 		fi
-	done <<<"$selections"
+	done
 
 	if ((AUTO_BREWFILE && installed_any)); then
 		echo

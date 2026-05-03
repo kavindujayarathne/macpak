@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-05-03
+
+### Fixed
+
+- **Multi-package install/uninstall no longer skips items silently**
+  - The selection loop fed user picks through stdin via a here-string, which `brew install`
+    (and any subprocess it spawned) inherited and could consume. Certain bottle pours
+    (observed with `helm`, `television`, and likely others) read from stdin during install,
+    eating the next selection lines and causing the loop to exit early at EOF without an error
+  - Selections are now read into an array up front and iterated independently of stdin, so
+    brew can no longer consume the loop's iteration data
+
 ## [1.1.1] - 2026-03-12
 
 ### Changed
